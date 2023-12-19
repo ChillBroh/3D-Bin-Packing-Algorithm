@@ -48,6 +48,7 @@ interface FitResult {
 @Injectable()
 export class AppService {
   binPacking3D(request: Request): Bin[] {
+    console.log(request);
     const { maxBin, box, numBoxes } = request;
 
     const bins: Bin[] = [];
@@ -114,6 +115,7 @@ export class AppService {
 
     function fitBox(bin: Bin, boxIndex: number, rotate = false): FitResult {
       const boxDimensions = [box.width, box.length, box.height];
+      const boxWeight = box.weight;
       const rotation = rotate
         ? [boxDimensions[1], boxDimensions[0], boxDimensions[2]]
         : boxDimensions;
@@ -122,8 +124,11 @@ export class AppService {
         for (let y = 0; y <= bin.length - rotation[1]; y++) {
           for (let z = 0; z <= bin.height - rotation[2]; z++) {
             let fit = true;
+            let totalWeight = boxWeight;
+
             for (const placedBox of bin.boxes) {
               const placedDimensions = [box.width, box.length, box.height];
+              const placedWeight = request.box.weight;
               if (
                 x < placedBox.position.x + placedDimensions[0] &&
                 y < placedBox.position.y + placedDimensions[1] &&
@@ -135,8 +140,9 @@ export class AppService {
                 fit = false;
                 break;
               }
+              totalWeight += placedWeight;
             }
-            if (fit) {
+            if (fit && totalWeight <= request.maxBin.weight) {
               finalBinDimensions = { success: true, x, y, z, ...rotation };
               return finalBinDimensions;
             }
