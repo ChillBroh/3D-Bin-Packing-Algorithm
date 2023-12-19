@@ -47,6 +47,9 @@ interface FitResult {
 
 @Injectable()
 export class AppService {
+  // Constants
+  readonly MAX_LARGE_BOX_VOLUME = 0.25;
+
   binPacking3D(request: Request): Bin[] {
     console.log(request);
     const { maxBin, box, numBoxes } = request;
@@ -54,6 +57,7 @@ export class AppService {
     const bins: Bin[] = [];
     let finalBinDimensions: FitResult = { success: false };
 
+    // Main recursive packing function
     function packBoxes(index: number): Bin[] {
       if (index === numBoxes) {
         return bins.slice();
@@ -69,9 +73,9 @@ export class AppService {
           const chosenFit = fit1.success ? fit1 : fit2;
           console.log(chosenFit);
           const remainingBox = {
-            width: currentBin.width - chosenFit[0],
-            length: currentBin.length - chosenFit[1],
-            height: currentBin.height - chosenFit[2],
+            width: currentBin.width - chosenFit.width!,
+            length: currentBin.length - chosenFit.length!,
+            height: currentBin.height - chosenFit.height!,
           };
 
           currentBin.boxes.push({
@@ -92,6 +96,7 @@ export class AppService {
         }
       }
 
+      // If no existing bin can accommodate the box, create a new bin
       const newBin = {
         width: maxBin.width,
         length: maxBin.length,
@@ -113,6 +118,7 @@ export class AppService {
       return null;
     }
 
+    // Check if the box fits into the given bin at a specific position
     function fitBox(bin: Bin, boxIndex: number, rotate = false): FitResult {
       const boxDimensions = [box.width, box.length, box.height];
       const boxWeight = box.weight;
@@ -120,19 +126,23 @@ export class AppService {
         ? [boxDimensions[1], boxDimensions[0], boxDimensions[2]]
         : boxDimensions;
 
-      for (let x = 0; x <= bin.width - rotation[0]; x++) {
-        for (let y = 0; y <= bin.length - rotation[1]; y++) {
-          for (let z = 0; z <= bin.height - rotation[2]; z++) {
+      for (let x = 0; x <= bin.remainingWidth - rotation[0]; x++) {
+        for (let y = 0; y <= bin.remainingLength - rotation[1]; y++) {
+          for (let z = 0; z <= bin.remainingHeight - rotation[2]; z++) {
             let fit = true;
             let totalWeight = boxWeight;
 
             for (const placedBox of bin.boxes) {
-              const placedDimensions = [box.width, box.length, box.height];
+              const placedDimensions = [
+                placedBox.position.x + box.width,
+                placedBox.position.y + box.length,
+                placedBox.position.z + box.height,
+              ];
               const placedWeight = request.box.weight;
               if (
-                x < placedBox.position.x + placedDimensions[0] &&
-                y < placedBox.position.y + placedDimensions[1] &&
-                z < placedBox.position.z + placedDimensions[2] &&
+                x < placedDimensions[0] &&
+                y < placedDimensions[1] &&
+                z < placedDimensions[2] &&
                 x + rotation[0] > placedBox.position.x &&
                 y + rotation[1] > placedBox.position.y &&
                 z + rotation[2] > placedBox.position.z
@@ -142,8 +152,17 @@ export class AppService {
               }
               totalWeight += placedWeight;
             }
+            // Check if the box fits and the total weight is within the limit
             if (fit && totalWeight <= request.maxBin.weight) {
-              finalBinDimensions = { success: true, x, y, z, ...rotation };
+              finalBinDimensions = {
+                success: true,
+                x,
+                y,
+                z,
+                width: rotation[0],
+                length: rotation[1],
+                height: rotation[2],
+              };
               return finalBinDimensions;
             }
           }
@@ -152,8 +171,10 @@ export class AppService {
       return { success: false };
     }
 
+    // Start packing the boxes
     const result = packBoxes(0);
 
+    // Display the result or failure message
     if (finalBinDimensions.success) {
       console.log('Large box dimensions after packing:', finalBinDimensions);
     } else {
