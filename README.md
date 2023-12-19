@@ -22,9 +22,160 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# 3D Bin PackingAlgorithm
+  <p align="center">The 3D Bin Packing Algorithm is a powerful solution designed to optimize the efficient packing of objects within three-dimensional containers. This algorithm is particularly useful in scenarios where maximizing space utilization is crucial, such as in logistics, manufacturing, or resource allocation.</p>
+    <p align="center">
+    <a ><img src="https://github.com/ChillBroh/3D-Bin-Packing-Algorithm/blob/main/D-bin-packing-problem.png" alt="NPM Version" /></a>
+    </p>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Sample Request
+
+```bash
+{
+  "maxBin": {
+      "width":100,
+      "height" : 100,
+      "length" : 100,
+      "weight" : 22
+  },
+  "box": {
+      "width":100,
+      "height" : 30,
+      "length" : 100,
+      "weight" : 5
+  },
+  "numBoxes": 10
+}
+```
+
+## Sample Response
+
+```bash
+{
+    "result": [
+        {
+            "width": 100,
+            "length": 100,
+            "height": 100,
+            "remainingWidth": 0,
+            "remainingLength": 0,
+            "remainingHeight": 70,
+            "boxes": [
+                {
+                    "index": 0,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "index": 1,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 30
+                    }
+                },
+                {
+                    "index": 2,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 60
+                    }
+                }
+            ]
+        },
+        {
+            "width": 100,
+            "length": 100,
+            "height": 100,
+            "remainingWidth": 0,
+            "remainingLength": 0,
+            "remainingHeight": 70,
+            "boxes": [
+                {
+                    "index": 3,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "index": 4,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 30
+                    }
+                },
+                {
+                    "index": 5,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 60
+                    }
+                }
+            ]
+        },
+        {
+            "width": 100,
+            "length": 100,
+            "height": 100,
+            "remainingWidth": 0,
+            "remainingLength": 0,
+            "remainingHeight": 70,
+            "boxes": [
+                {
+                    "index": 6,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "index": 7,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 30
+                    }
+                },
+                {
+                    "index": 8,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 60
+                    }
+                }
+            ]
+        },
+        {
+            "width": 100,
+            "length": 100,
+            "height": 100,
+            "remainingWidth": 0,
+            "remainingLength": 0,
+            "remainingHeight": 70,
+            "boxes": [
+                {
+                    "index": 9,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                }
+            ]
+        }
+    ]
+}
+```
 
 ## Installation
 
