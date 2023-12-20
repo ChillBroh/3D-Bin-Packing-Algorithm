@@ -23,6 +23,7 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 # 3D Bin PackingAlgorithm
+
   <p align="center">The 3D Bin Packing Algorithm is a powerful solution designed to optimize the efficient packing of objects within three-dimensional containers. This algorithm is particularly useful in scenarios where maximizing space utilization is crucial, such as in logistics, manufacturing, or resource allocation.</p>
     <p align="center">
     <a ><img src="https://github.com/ChillBroh/3D-Bin-Packing-Algorithm/blob/main/D-bin-packing-problem.png" alt="NPM Version" /></a>
@@ -33,15 +34,15 @@
 ```bash
 {
   "maxBin": {
-      "width":100,
+      "width" : 100,
       "height" : 100,
       "length" : 100,
       "weight" : 22
   },
   "box": {
-      "width":100,
+      "width":10,
       "height" : 30,
-      "length" : 100,
+      "length" : 10,
       "weight" : 5
   },
   "numBoxes": 10
@@ -57,9 +58,7 @@
             "width": 100,
             "length": 100,
             "height": 100,
-            "remainingWidth": 0,
-            "remainingLength": 0,
-            "remainingHeight": 70,
+            "weight": 20,
             "boxes": [
                 {
                     "index": 0,
@@ -84,6 +83,14 @@
                         "y": 0,
                         "z": 60
                     }
+                },
+                {
+                    "index": 3,
+                    "position": {
+                        "x": 0,
+                        "y": 10,
+                        "z": 0
+                    }
                 }
             ]
         },
@@ -91,24 +98,14 @@
             "width": 100,
             "length": 100,
             "height": 100,
-            "remainingWidth": 0,
-            "remainingLength": 0,
-            "remainingHeight": 70,
+            "weight": 20,
             "boxes": [
-                {
-                    "index": 3,
-                    "position": {
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                    }
-                },
                 {
                     "index": 4,
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 30
+                        "z": 0
                     }
                 },
                 {
@@ -116,41 +113,23 @@
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 60
+                        "z": 30
                     }
-                }
-            ]
-        },
-        {
-            "width": 100,
-            "length": 100,
-            "height": 100,
-            "remainingWidth": 0,
-            "remainingLength": 0,
-            "remainingHeight": 70,
-            "boxes": [
+                },
                 {
                     "index": 6,
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 0
+                        "z": 60
                     }
                 },
                 {
                     "index": 7,
                     "position": {
                         "x": 0,
-                        "y": 0,
-                        "z": 30
-                    }
-                },
-                {
-                    "index": 8,
-                    "position": {
-                        "x": 0,
-                        "y": 0,
-                        "z": 60
+                        "y": 10,
+                        "z": 0
                     }
                 }
             ]
@@ -159,16 +138,22 @@
             "width": 100,
             "length": 100,
             "height": 100,
-            "remainingWidth": 0,
-            "remainingLength": 0,
-            "remainingHeight": 70,
+            "weight": 10,
             "boxes": [
+                {
+                    "index": 8,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
                 {
                     "index": 9,
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 0
+                        "z": 30
                     }
                 }
             ]

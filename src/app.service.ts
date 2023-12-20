@@ -45,12 +45,36 @@ interface FitResult {
 @Injectable()
 export class AppService {
   // Constants
-  readonly MAX_LARGE_BOX_VOLUME_CUBIC_CM = 0.25; // Assuming unit is cubic centimeter
+  //y = length
+  //z= height
+  //x = width
+  binPacking3D(request: Request): Bin[] | string {
+    const MAX_LARGE_BOX_VOLUME_CUBIC_CM = 250000; // Assuming unit is cubic centimeter
 
-  binPacking3D(request: Request): Bin[] {
     console.log(request);
     const { maxBin, box, numBoxes } = request;
     const smallBoxWeight = box.weight;
+    const smallBoxVolume = box.length * box.height * box.width;
+    let totalVolume = smallBoxVolume;
+    console.log('small', smallBoxVolume);
+
+    if (maxBin.width < box.width) {
+      return 'Width must be below 105cm';
+    }
+
+    if (maxBin.length < box.length) {
+      return 'length must be below 105cm';
+    }
+
+    if (maxBin.height < box.height) {
+      return 'Height must be below 105cm';
+    }
+    if (maxBin.weight < box.weight) {
+      return 'Weight must be below 22kg';
+    }
+    if (smallBoxVolume > MAX_LARGE_BOX_VOLUME_CUBIC_CM) {
+      return 'total volume must be below 0.25 cubic meteres';
+    }
 
     const bins: Bin[] = [];
     let finalBinDimensions: FitResult = { success: false };
@@ -70,20 +94,16 @@ export class AppService {
         if (fit1.success || fit2.success) {
           const chosenFit = fit1.success ? fit1 : fit2;
           console.log(chosenFit);
-          const remainingBox = {
-            width: currentBin.width - chosenFit.width!,
-            length: currentBin.length - chosenFit.length!,
-            height: currentBin.height - chosenFit.height!,
-          };
 
-          currentBin.boxes.push({
-            index,
-            position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
-          });
-
+          if (totalVolume < MAX_LARGE_BOX_VOLUME_CUBIC_CM) {
+            totalVolume += smallBoxVolume;
+            currentBin.boxes.push({
+              index,
+              position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
+            });
+            currentBin.weight += box.weight;
+          }
           // Update total weight in the bin
-          currentBin.weight += box.weight;
-
           const result = packBoxes(index + 1);
 
           if (result !== null) {
