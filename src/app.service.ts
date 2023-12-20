@@ -5,10 +5,7 @@ interface Bin {
   width: number;
   length: number;
   height: number;
-  remainingWidth: number;
-  remainingLength: number;
-  remainingHeight: number;
-
+  weight: number;
   boxes: {
     index: number;
     position: { x: number; y: number; z: number };
@@ -48,11 +45,12 @@ interface FitResult {
 @Injectable()
 export class AppService {
   // Constants
-  readonly MAX_LARGE_BOX_VOLUME = 0.25;
+  readonly MAX_LARGE_BOX_VOLUME_CUBIC_CM = 0.25; // Assuming unit is cubic centimeter
 
   binPacking3D(request: Request): Bin[] {
     console.log(request);
     const { maxBin, box, numBoxes } = request;
+    const smallBoxWeight = box.weight;
 
     const bins: Bin[] = [];
     let finalBinDimensions: FitResult = { success: false };
@@ -83,9 +81,8 @@ export class AppService {
             position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
           });
 
-          currentBin.remainingWidth = remainingBox.width;
-          currentBin.remainingLength = remainingBox.length;
-          currentBin.remainingHeight = remainingBox.height;
+          // Update total weight in the bin
+          currentBin.weight += box.weight;
 
           const result = packBoxes(index + 1);
 
@@ -93,6 +90,7 @@ export class AppService {
             return result;
           }
           currentBin.boxes.pop();
+          currentBin.weight -= box.weight;
         }
       }
 
@@ -101,9 +99,7 @@ export class AppService {
         width: maxBin.width,
         length: maxBin.length,
         height: maxBin.height,
-        remainingWidth: maxBin.width,
-        remainingLength: maxBin.length,
-        remainingHeight: maxBin.height,
+        weight: box.weight - smallBoxWeight, // Set initial weight to the weight of the first box
         boxes: [],
       };
       bins.push(newBin);
@@ -126,9 +122,9 @@ export class AppService {
         ? [boxDimensions[1], boxDimensions[0], boxDimensions[2]]
         : boxDimensions;
 
-      for (let x = 0; x <= bin.remainingWidth - rotation[0]; x++) {
-        for (let y = 0; y <= bin.remainingLength - rotation[1]; y++) {
-          for (let z = 0; z <= bin.remainingHeight - rotation[2]; z++) {
+      for (let x = 0; x <= bin.width - rotation[0]; x++) {
+        for (let y = 0; y <= bin.length - rotation[1]; y++) {
+          for (let z = 0; z <= bin.height - rotation[2]; z++) {
             let fit = true;
             let totalWeight = boxWeight;
 
@@ -177,6 +173,10 @@ export class AppService {
     // Display the result or failure message
     if (finalBinDimensions.success) {
       console.log('Large box dimensions after packing:', finalBinDimensions);
+      console.log(
+        'Total weight of the large box inside the new bin:',
+        bins[0].weight,
+      );
     } else {
       console.log('Packing failed. No valid arrangement found.');
     }
