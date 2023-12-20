@@ -44,16 +44,15 @@ interface FitResult {
 
 @Injectable()
 export class AppService {
-  // Constants
   //y = length
   //z= height
   //x = width
   binPacking3D(request: Request): Bin[] | string {
     const MAX_LARGE_BOX_VOLUME_CUBIC_CM = 250000; // Assuming unit is cubic centimeter
 
-    console.log(request);
     const { maxBin, box, numBoxes } = request;
     const smallBoxWeight = box.weight;
+
     const smallBoxVolume = box.length * box.height * box.width;
     let totalVolume = smallBoxVolume;
     console.log('small', smallBoxVolume);
@@ -75,11 +74,9 @@ export class AppService {
     if (smallBoxVolume > MAX_LARGE_BOX_VOLUME_CUBIC_CM) {
       return 'total volume must be below 0.25 cubic meteres';
     }
-
     const bins: Bin[] = [];
     let finalBinDimensions: FitResult = { success: false };
 
-    // Main recursive packing function
     function packBoxes(index: number): Bin[] {
       if (index === numBoxes) {
         return bins.slice();
@@ -103,7 +100,7 @@ export class AppService {
             });
             currentBin.weight += box.weight;
           }
-          // Update total weight in the bin
+          totalVolume = 0;
           const result = packBoxes(index + 1);
 
           if (result !== null) {
@@ -114,12 +111,11 @@ export class AppService {
         }
       }
 
-      // If no existing bin can accommodate the box, create a new bin
       const newBin = {
         width: maxBin.width,
         length: maxBin.length,
         height: maxBin.height,
-        weight: box.weight - smallBoxWeight, // Set initial weight to the weight of the first box
+        weight: box.weight - smallBoxWeight,
         boxes: [],
       };
       bins.push(newBin);
@@ -134,7 +130,6 @@ export class AppService {
       return null;
     }
 
-    // Check if the box fits into the given bin at a specific position
     function fitBox(bin: Bin, boxIndex: number, rotate = false): FitResult {
       const boxDimensions = [box.width, box.length, box.height];
       const boxWeight = box.weight;
@@ -147,18 +142,13 @@ export class AppService {
           for (let z = 0; z <= bin.height - rotation[2]; z++) {
             let fit = true;
             let totalWeight = boxWeight;
-
             for (const placedBox of bin.boxes) {
-              const placedDimensions = [
-                placedBox.position.x + box.width,
-                placedBox.position.y + box.length,
-                placedBox.position.z + box.height,
-              ];
+              const placedDimensions = [box.width, box.length, box.height];
               const placedWeight = request.box.weight;
               if (
-                x < placedDimensions[0] &&
-                y < placedDimensions[1] &&
-                z < placedDimensions[2] &&
+                x < placedBox.position.x + placedDimensions[0] &&
+                y < placedBox.position.y + placedDimensions[1] &&
+                z < placedBox.position.z + placedDimensions[2] &&
                 x + rotation[0] > placedBox.position.x &&
                 y + rotation[1] > placedBox.position.y &&
                 z + rotation[2] > placedBox.position.z
@@ -168,17 +158,8 @@ export class AppService {
               }
               totalWeight += placedWeight;
             }
-            // Check if the box fits and the total weight is within the limit
             if (fit && totalWeight <= request.maxBin.weight) {
-              finalBinDimensions = {
-                success: true,
-                x,
-                y,
-                z,
-                width: rotation[0],
-                length: rotation[1],
-                height: rotation[2],
-              };
+              finalBinDimensions = { success: true, x, y, z, ...rotation };
               return finalBinDimensions;
             }
           }
@@ -187,16 +168,10 @@ export class AppService {
       return { success: false };
     }
 
-    // Start packing the boxes
     const result = packBoxes(0);
 
-    // Display the result or failure message
     if (finalBinDimensions.success) {
       console.log('Large box dimensions after packing:', finalBinDimensions);
-      console.log(
-        'Total weight of the large box inside the new bin:',
-        bins[0].weight,
-      );
     } else {
       console.log('Packing failed. No valid arrangement found.');
     }
