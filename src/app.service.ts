@@ -44,19 +44,15 @@ interface FitResult {
 
 @Injectable()
 export class AppService {
-  // Constants
   //y = length
   //z= height
   //x = width
   binPacking3D(request: Request): Bin[] | string {
     const MAX_LARGE_BOX_VOLUME_CUBIC_CM = 250000; // Assuming unit is cubic centimeter
 
-    console.log(request);
     const { maxBin, box, numBoxes } = request;
     const smallBoxWeight = box.weight;
     const smallBoxVolume = box.length * box.height * box.width;
-    let totalVolume = smallBoxVolume;
-    console.log('small', smallBoxVolume);
 
     if (maxBin.width < box.width) {
       return 'Width must be below 105cm';
@@ -90,22 +86,29 @@ export class AppService {
 
         const fit1 = fitBox(currentBin, index);
         const fit2 = fitBox(currentBin, index, true);
-
+        // if (!(fit1.success || fit2.success)) {
+        //   totalVolume = 0;
+        // }
         if (fit1.success || fit2.success) {
           const chosenFit = fit1.success ? fit1 : fit2;
-          console.log(chosenFit);
 
-          if (totalVolume < MAX_LARGE_BOX_VOLUME_CUBIC_CM) {
-            totalVolume += smallBoxVolume;
-            currentBin.boxes.push({
-              index,
-              position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
-            });
-            currentBin.weight += box.weight;
-          }
+          // if (totalVolume < MAX_LARGE_BOX_VOLUME_CUBIC_CM) {
+          //   currentBin.boxes.push({
+          //     index,
+          //     position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
+          //   });
+          //   currentBin.weight += box.weight;
+          // }
           // Update total weight in the bin
+          // console.log('tot', totalVolume);
+          // totalVolume += smallBoxVolume;
+          // console.log('tot2', totalVolume);
+          currentBin.boxes.push({
+            index,
+            position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
+          });
+          currentBin.weight += box.weight;
           const result = packBoxes(index + 1);
-
           if (result !== null) {
             return result;
           }
@@ -137,6 +140,7 @@ export class AppService {
     // Check if the box fits into the given bin at a specific position
     function fitBox(bin: Bin, boxIndex: number, rotate = false): FitResult {
       const boxDimensions = [box.width, box.length, box.height];
+      const boxVolume = boxDimensions.reduce((acc, dim) => acc * dim, 1);
       const boxWeight = box.weight;
       const rotation = rotate
         ? [boxDimensions[1], boxDimensions[0], boxDimensions[2]]
@@ -147,6 +151,7 @@ export class AppService {
           for (let z = 0; z <= bin.height - rotation[2]; z++) {
             let fit = true;
             let totalWeight = boxWeight;
+            let totalVolume = boxVolume;
 
             for (const placedBox of bin.boxes) {
               const placedDimensions = [
@@ -154,7 +159,10 @@ export class AppService {
                 placedBox.position.y + box.length,
                 placedBox.position.z + box.height,
               ];
+              const placedVolume =
+                request.box.width * request.box.length * request.box.height; // Calculate placed box volume
               const placedWeight = request.box.weight;
+
               if (
                 x < placedDimensions[0] &&
                 y < placedDimensions[1] &&
@@ -166,10 +174,17 @@ export class AppService {
                 fit = false;
                 break;
               }
+
               totalWeight += placedWeight;
+              totalVolume += placedVolume;
             }
-            // Check if the box fits and the total weight is within the limit
-            if (fit && totalWeight <= request.maxBin.weight) {
+
+            // Check if the box fits, the total weight is within the limit, and the total volume is within the limit
+            if (
+              fit &&
+              totalWeight <= request.maxBin.weight &&
+              totalVolume <= MAX_LARGE_BOX_VOLUME_CUBIC_CM
+            ) {
               finalBinDimensions = {
                 success: true,
                 x,
