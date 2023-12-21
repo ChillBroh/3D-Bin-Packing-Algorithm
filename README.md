@@ -40,10 +40,10 @@
       "weight" : 22
   },
   "box": {
-      "width":40,
-      "height" : 10,
-      "length" : 100,
-      "weight" : 2
+      "width":10,
+      "height" : 15,
+      "length" : 20,
+      "weight" : 5
   },
   "numBoxes": 10
 }
@@ -58,7 +58,10 @@
             "width": 100,
             "length": 100,
             "height": 100,
-            "weight": 12,
+            "weight": 20,
+            "totalWidth": 10,
+            "totalHeight": 60,
+            "totalLength": 20,
             "boxes": [
                 {
                     "index": 0,
@@ -73,7 +76,7 @@
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 10
+                        "z": 15
                     }
                 },
                 {
@@ -89,23 +92,7 @@
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 70
-                    }
-                },
-                {
-                    "index": 4,
-                    "position": {
-                        "x": 40,
-                        "y": 0,
-                        "z": 0
-                    }
-                },
-                {
-                    "index": 5,
-                    "position": {
-                        "x": 40,
-                        "y": 0,
-                        "z": 10
+                        "z": 45
                     }
                 }
             ]
@@ -114,10 +101,13 @@
             "width": 100,
             "length": 100,
             "height": 100,
-            "weight": 8,
+            "weight": 20,
+            "totalWidth": 10,
+            "totalHeight": 60,
+            "totalLength": 20,
             "boxes": [
                 {
-                    "index": 6,
+                    "index": 4,
                     "position": {
                         "x": 0,
                         "y": 0,
@@ -125,15 +115,15 @@
                     }
                 },
                 {
-                    "index": 7,
+                    "index": 5,
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 10
+                        "z": 15
                     }
                 },
                 {
-                    "index": 8,
+                    "index": 6,
                     "position": {
                         "x": 0,
                         "y": 0,
@@ -141,11 +131,38 @@
                     }
                 },
                 {
+                    "index": 7,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 45
+                    }
+                }
+            ]
+        },
+        {
+            "width": 100,
+            "length": 100,
+            "height": 100,
+            "weight": 10,
+            "totalWidth": 10,
+            "totalHeight": 30,
+            "totalLength": 20,
+            "boxes": [
+                {
+                    "index": 8,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
                     "index": 9,
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 70
+                        "z": 15
                     }
                 }
             ]
