@@ -34,16 +34,16 @@
 ```bash
 {
   "maxBin": {
-      "width" : 100,
+      "width":100,
       "height" : 100,
       "length" : 100,
       "weight" : 22
   },
   "box": {
-      "width":10,
-      "height" : 30,
-      "length" : 10,
-      "weight" : 5
+      "width":40,
+      "height" : 10,
+      "length" : 100,
+      "weight" : 2
   },
   "numBoxes": 10
 }
@@ -58,7 +58,7 @@
             "width": 100,
             "length": 100,
             "height": 100,
-            "weight": 20,
+            "weight": 12,
             "boxes": [
                 {
                     "index": 0,
@@ -73,7 +73,7 @@
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 30
+                        "z": 10
                     }
                 },
                 {
@@ -81,29 +81,21 @@
                     "position": {
                         "x": 0,
                         "y": 0,
-                        "z": 60
+                        "z": 30
                     }
                 },
                 {
                     "index": 3,
                     "position": {
                         "x": 0,
-                        "y": 10,
-                        "z": 0
+                        "y": 0,
+                        "z": 70
                     }
-                }
-            ]
-        },
-        {
-            "width": 100,
-            "length": 100,
-            "height": 100,
-            "weight": 20,
-            "boxes": [
+                },
                 {
                     "index": 4,
                     "position": {
-                        "x": 0,
+                        "x": 40,
                         "y": 0,
                         "z": 0
                     }
@@ -111,25 +103,9 @@
                 {
                     "index": 5,
                     "position": {
-                        "x": 0,
+                        "x": 40,
                         "y": 0,
-                        "z": 30
-                    }
-                },
-                {
-                    "index": 6,
-                    "position": {
-                        "x": 0,
-                        "y": 0,
-                        "z": 60
-                    }
-                },
-                {
-                    "index": 7,
-                    "position": {
-                        "x": 0,
-                        "y": 10,
-                        "z": 0
+                        "z": 10
                     }
                 }
             ]
@@ -138,10 +114,10 @@
             "width": 100,
             "length": 100,
             "height": 100,
-            "weight": 10,
+            "weight": 8,
             "boxes": [
                 {
-                    "index": 8,
+                    "index": 6,
                     "position": {
                         "x": 0,
                         "y": 0,
@@ -149,11 +125,27 @@
                     }
                 },
                 {
-                    "index": 9,
+                    "index": 7,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 10
+                    }
+                },
+                {
+                    "index": 8,
                     "position": {
                         "x": 0,
                         "y": 0,
                         "z": 30
+                    }
+                },
+                {
+                    "index": 9,
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 70
                     }
                 }
             ]
