@@ -6,6 +6,9 @@ interface Bin {
   length: number;
   height: number;
   weight: number;
+  totalWidth: number;
+  totalHeight: number;
+  totalLength: number;
   boxes: {
     index: number;
     position: { x: number; y: number; z: number };
@@ -108,6 +111,9 @@ export class AppService {
         length: maxBin.length,
         height: maxBin.height,
         weight: box.weight - smallBoxWeight,
+        totalWidth: box.width,
+        totalHeight: box.height,
+        totalLength: box.length,
         boxes: [],
       };
       bins.push(newBin);
@@ -184,10 +190,18 @@ export class AppService {
 
     const result = packBoxes(0);
 
-    if (finalBinDimensions.success) {
-      console.log('Large box dimensions after packing:', finalBinDimensions);
-    } else {
-      console.log('Packing failed. No valid arrangement found.');
+    for (const bin of bins) {
+      let maxX = 0;
+      let maxY = 0;
+      let maxZ = 0;
+      for (const box of bin.boxes) {
+        maxX = Math.max(maxX, box.position.x);
+        maxY = Math.max(maxY, box.position.y);
+        maxZ = Math.max(maxZ, box.position.z);
+      }
+      bin.totalWidth += maxX;
+      bin.totalLength += maxY;
+      bin.totalHeight += maxZ;
     }
 
     return result;
