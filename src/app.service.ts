@@ -52,6 +52,7 @@ export class AppService {
 
     const { maxBin, box, numBoxes } = request;
     const smallBoxWeight = box.weight;
+
     const smallBoxVolume = box.length * box.height * box.width;
 
     if (maxBin.width < box.width) {
@@ -71,11 +72,9 @@ export class AppService {
     if (smallBoxVolume > MAX_LARGE_BOX_VOLUME_CUBIC_CM) {
       return 'total volume must be below 0.25 cubic meteres';
     }
-
     const bins: Bin[] = [];
     let finalBinDimensions: FitResult = { success: false };
 
-    // Main recursive packing function
     function packBoxes(index: number): Bin[] {
       if (index === numBoxes) {
         return bins.slice();
@@ -117,12 +116,11 @@ export class AppService {
         }
       }
 
-      // If no existing bin can accommodate the box, create a new bin
       const newBin = {
         width: maxBin.width,
         length: maxBin.length,
         height: maxBin.height,
-        weight: box.weight - smallBoxWeight, // Set initial weight to the weight of the first box
+        weight: box.weight - smallBoxWeight,
         boxes: [],
       };
       bins.push(newBin);
@@ -137,7 +135,6 @@ export class AppService {
       return null;
     }
 
-    // Check if the box fits into the given bin at a specific position
     function fitBox(bin: Bin, boxIndex: number, rotate = false): FitResult {
       const boxDimensions = [box.width, box.length, box.height];
       const boxVolume = boxDimensions.reduce((acc, dim) => acc * dim, 1);
@@ -164,9 +161,9 @@ export class AppService {
               const placedWeight = request.box.weight;
 
               if (
-                x < placedDimensions[0] &&
-                y < placedDimensions[1] &&
-                z < placedDimensions[2] &&
+                x < placedBox.position.x + placedDimensions[0] &&
+                y < placedBox.position.y + placedDimensions[1] &&
+                z < placedBox.position.z + placedDimensions[2] &&
                 x + rotation[0] > placedBox.position.x &&
                 y + rotation[1] > placedBox.position.y &&
                 z + rotation[2] > placedBox.position.z
@@ -202,16 +199,10 @@ export class AppService {
       return { success: false };
     }
 
-    // Start packing the boxes
     const result = packBoxes(0);
 
-    // Display the result or failure message
     if (finalBinDimensions.success) {
       console.log('Large box dimensions after packing:', finalBinDimensions);
-      console.log(
-        'Total weight of the large box inside the new bin:',
-        bins[0].weight,
-      );
     } else {
       console.log('Packing failed. No valid arrangement found.');
     }
