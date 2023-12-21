@@ -85,23 +85,10 @@ export class AppService {
 
         const fit1 = fitBox(currentBin, index);
         const fit2 = fitBox(currentBin, index, true);
-        // if (!(fit1.success || fit2.success)) {
-        //   totalVolume = 0;
-        // }
+
         if (fit1.success || fit2.success) {
           const chosenFit = fit1.success ? fit1 : fit2;
 
-          // if (totalVolume < MAX_LARGE_BOX_VOLUME_CUBIC_CM) {
-          //   currentBin.boxes.push({
-          //     index,
-          //     position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
-          //   });
-          //   currentBin.weight += box.weight;
-          // }
-          // Update total weight in the bin
-          // console.log('tot', totalVolume);
-          // totalVolume += smallBoxVolume;
-          // console.log('tot2', totalVolume);
           currentBin.boxes.push({
             index,
             position: { x: chosenFit.x!, y: chosenFit.y!, z: chosenFit.z! },
@@ -151,11 +138,7 @@ export class AppService {
             let totalVolume = boxVolume;
 
             for (const placedBox of bin.boxes) {
-              const placedDimensions = [
-                placedBox.position.x + box.width,
-                placedBox.position.y + box.length,
-                placedBox.position.z + box.height,
-              ];
+              const placedDimensions = [box.width, box.length, box.height];
               const placedVolume =
                 request.box.width * request.box.length * request.box.height; // Calculate placed box volume
               const placedWeight = request.box.weight;
